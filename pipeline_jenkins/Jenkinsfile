@@ -77,14 +77,24 @@ pipeline {
 		
 		stage('publish') {
 			steps {
-				publishOverSsh {
-					server('server_deploy') {
-						transferSet {
-						sourceFiles('target/movieapp.jar')
-						}
+				script {
+					withCredentials([sshUserPrivateKey(credentialsId: 'ssh_server_deploy', keyFileVariable: 'identity', passphraseVariable: 'passphrase', usernameVariable: 'userName')]) {
+						def remote = [:]
+						remote.name = 'test'
+						remote.host = '192.168.1.23'
+						remote.port = 22
+						remote.allowAnyHosts = true
+						remote.timoutSec = 3000
+						
+						remote.user = userName
+						remote.identityFile = identity
+						remote.passphrase = passphrase
+
+						echo 'deploy artifact'
+						sshPut remote: remote, from: "target/movieapp.jar", into: '/home/srvadmin/test'
 					}
 				}
 			}
-        }
+		}
     }
 }
