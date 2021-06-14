@@ -8,7 +8,7 @@ pipeline {
     }
 
  parameters {
-        string(name: 'BRANCH', defaultValue: 'mater', description: 'Git branch of the Java project')
+        string(name: 'BRANCH', defaultValue: 'master', description: 'Git branch of the Java project')
 
     }
 
@@ -75,5 +75,16 @@ pipeline {
             }
         }
 		
+		stage('publish') {
+			steps {
+				publishOverSsh {
+					server('server_deploy') {
+						transferSet {
+						sourceFiles('target/movieapp.jar')
+						}
+					}
+				}
+			}
+        }
     }
 }
