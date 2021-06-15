@@ -122,7 +122,7 @@ pipeline {
 						remote.passphrase = passphrase
 
 						echo 'deploy artifact'
-						sshPut remote: remote, from: "/.", filterRegex: /\.sql$/, into: '/home/srvadmin/test'
+						sshPut remote: remote, from: ".", filterRegex: /\.sql$/, into: '/home/srvadmin/test'
 						
 					}
 				}
