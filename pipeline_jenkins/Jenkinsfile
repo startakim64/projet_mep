@@ -75,17 +75,6 @@ pipeline {
         }
 		
 		
-        stage('publish db') {
-            steps {
-                // Get some code from a GitHub repository
-                
-				git branch: "${params.BRANCHDB}", 
-                    url:'https://github.com/matthcol/dbmovie.git'
-
-            }
-
-
-        }
 		
 		stage('publish') {
 			steps {
@@ -142,5 +131,7 @@ pipeline {
 
 
             }
+	
 		}
+	}	
 }
