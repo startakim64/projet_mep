@@ -9,9 +9,10 @@ pipeline {
 
  parameters {
         string(name: 'BRANCH', defaultValue: 'dev', description: 'Git branch of the Java project')
+    }
+parameters {
 		string(name: 'BRANCHDB', defaultValue: 'dev1', description: 'Git branch of the db')
     }
-
 
 
     stages {
