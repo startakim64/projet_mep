@@ -76,7 +76,7 @@ pipeline {
         }
 		
 		
-        stage('compile') {
+        stage('publish db') {
             steps {
                 // Get some code from a GitHub repository
                 
