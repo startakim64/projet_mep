@@ -146,7 +146,7 @@ pipeline {
 						remote.passphrase = passphrase
 
 
-						sshPut remote: remote, from: "dist/*", into: '/home/srvadmin/test'
+						sshPut remote: remote, from: "dist", into: '/home/srvadmin/test'
 
 					}
 				}
