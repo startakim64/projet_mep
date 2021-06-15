@@ -8,8 +8,8 @@ pipeline {
     }
 
  parameters {
-        string(name: 'BRANCH', defaultValue: 'master', description: 'Git branch of the Java project')
-
+        string(name: 'BRANCH', defaultValue: 'dev', description: 'Git branch of the Java project')
+		string(name: 'BRANCHDB', defaultValue: 'dev1', description: 'Git branch of the db')
     }
 
 
