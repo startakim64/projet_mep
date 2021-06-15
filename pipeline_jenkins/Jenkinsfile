@@ -11,7 +11,7 @@ pipeline {
         string(name: 'BRANCH', defaultValue: 'master', description: 'Git branch of the Java project')
 		string(name: 'BRANCHDB', defaultValue: 'dev4', description: 'Git branch of the db')
 		string(name: 'BRANCHFR', defaultValue: 'master', description: 'Git branch of the front')
-		string(name: 'BACKEND_BASE_URL', defaultValue: 'http://192.168.1.35:8080/api', description: 'Git branch of the front')
+		string(name: 'BACKEND_BASE_URL', defaultValue: 'http://192.168.1.35:8080/api', description: 'url to connect the back to front')
     }
 
 
@@ -86,7 +86,7 @@ pipeline {
 
 					sh 'echo backend will be set to ${params.BACKEND_BASE_URL}'
 				// change backend in prod environment file
-					sh 'sed -i "s#BACKEND_BASE_URL#$BACKEND_BASE_URL#" src/environments/environment.prod.ts'
+					sh 'sed -i "s#BACKEND_BASE_URL#${params.BACKEND_BASE_URL}#" src/environments/environment.prod.ts'
 				
 				
                 sh "npm ci"
