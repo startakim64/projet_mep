@@ -79,7 +79,8 @@ pipeline {
         stage('compile') {
             steps {
                 // Get some code from a GitHub repository
-                git branch: "${params.BRANCH}", 
+                
+				git branch: "${params.BRANCHDB}", 
                     url:'https://github.com/matthcol/dbmovie.git'
 
             }
