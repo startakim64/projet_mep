@@ -86,9 +86,9 @@ pipeline {
                     url:'https://github.com/matthcol/movie_angular.git'
 
 
-					sh 'echo backend will be set to ${params.BACKEND_BASE_URL}'
+					sh 'echo backend will be set to $BACKEND_BASE_URL'
 				// change backend in prod environment file
-					sh 'sed -i "s#BACKEND_BASE_URL#${params.BACKEND_BASE_URL}#" src/environments/environment.prod.ts'
+					sh 'sed -i "s#BACKEND_BASE_URL#$BACKEND_BASE_URL#" src/environments/environment.prod.ts'
 				
 				
                 sh "npm ci"
