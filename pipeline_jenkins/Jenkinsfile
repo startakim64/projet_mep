@@ -8,13 +8,15 @@ pipeline {
     }
 
  parameters {
-        string(name: 'BRANCH', defaultValue: 'dev', description: 'Git branch of the Java project')
-		string(name: 'BRANCHDB', defaultValue: 'dev1', description: 'Git branch of the db')
+        string(name: 'BRANCH', defaultValue: 'master', description: 'Git branch of the Java project')
+		string(name: 'BRANCHDB', defaultValue: 'dev4', description: 'Git branch of the db')
+		string(name: 'BRANCHFR', defaultValue: 'master', description: 'Git branch of the front')
+		string(name: 'BACKEND_BASE_URL', defaultValue: 'http://192.168.1.35:8080/api', description: 'Git branch of the front')
     }
 
 
     stages {
-        stage('compile') {
+        stage('compile Back App') {
             steps {
                 // Get some code from a GitHub repository
                 git branch: "${params.BRANCH}", 
@@ -32,7 +34,7 @@ pipeline {
        
 		
 		
-		stage('test') {
+		stage('test Back App') {
             steps {
 
                 // Run Maven on a Unix agent.
@@ -53,7 +55,7 @@ pipeline {
         
 		
 		
-		stage('package') {
+		stage('Package Back App') {
             steps {
                
 
@@ -76,7 +78,32 @@ pipeline {
 		
 		
 		
-		stage('publish') {
+        stage('Build Front App') {
+            steps {
+                git branch: "${params.BRANCHFR}", 
+                    url:'https://github.com/matthcol/movie_angular.git'
+
+
+					sh 'echo backend will be set to ${params.BACKEND_BASE_URL}'
+				// change backend in prod environment file
+					sh 'sed -i "s#BACKEND_BASE_URL#$BACKEND_BASE_URL#" src/environments/environment.prod.ts'
+				
+				
+                sh "npm ci"
+                sh "ng build --prod"
+            }
+        }
+        
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		stage('publish Back App') {
 			steps {
 				script {
 					withCredentials([sshUserPrivateKey(credentialsId: 'ssh_server_deploy', keyFileVariable: 'identity', passphraseVariable: 'passphrase', usernameVariable: 'userName')]) {
@@ -91,9 +118,9 @@ pipeline {
 						remote.identityFile = identity
 						remote.passphrase = passphrase
 
-						echo 'deploy artifact'
+
 						sshPut remote: remote, from: "target/movieapp.jar", into: '/home/srvadmin/test'
-						//sshPut remote: remote, from: "movieapp.jar", into: '/home/srvadmin/test'
+						
 					}
 				}
 			}
@@ -101,7 +128,34 @@ pipeline {
 		
 		
 		
-		stage('publish script db') {
+		stage('publish Front App') {
+			steps {
+				script {
+					withCredentials([sshUserPrivateKey(credentialsId: 'ssh_server_deploy', keyFileVariable: 'identity', passphraseVariable: 'passphrase', usernameVariable: 'userName')]) {
+						def remote = [:]
+						remote.name = 'test'
+						remote.host = '192.168.1.23'
+						remote.port = 22
+						remote.allowAnyHosts = true
+						remote.timoutSec = 3000
+						
+						remote.user = userName
+						remote.identityFile = identity
+						remote.passphrase = passphrase
+
+
+						sshPut remote: remote, from: "dist/*", into: '/home/srvadmin/test'
+
+					}
+				}
+			}
+		}
+		
+		
+		
+		
+		
+		stage('publish Script db') {
             steps {
                 // Get some code from a GitHub repository
                 
@@ -121,7 +175,7 @@ pipeline {
 						remote.identityFile = identity
 						remote.passphrase = passphrase
 
-						echo 'deploy artifact'
+
 						sshPut remote: remote, from: ".", filterRegex: /\.sql$/, into: '/home/srvadmin/Deploy/PlaybookTEST/roles/install_databasemy/files'
 						sshPut remote: remote, from: ".", filterRegex: /\.sql$/, into: '/home/srvadmin/Deploy/PlaybookTEST/roles/install_databasepg/files'
 					}
@@ -133,5 +187,6 @@ pipeline {
             }
 	
 		}
-	}	
+	}
+	
 }
