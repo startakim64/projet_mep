@@ -75,6 +75,18 @@ pipeline {
             }
         }
 		
+		
+        stage('compile') {
+            steps {
+                // Get some code from a GitHub repository
+                git branch: "${params.BRANCH}", 
+                    url:'https://github.com/matthcol/dbmovie.git'
+
+            }
+
+
+        }
+		
 		stage('publish') {
 			steps {
 				script {
@@ -92,6 +104,7 @@ pipeline {
 
 						echo 'deploy artifact'
 						sshPut remote: remote, from: "target/movieapp.jar", into: '/home/srvadmin/test'
+						//sshPut remote: remote, from: "movieapp.jar", into: '/home/srvadmin/test'
 					}
 				}
 			}
